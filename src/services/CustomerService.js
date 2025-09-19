@@ -1,8 +1,7 @@
-<<<<<<< HEAD
+
 const API_URL = "https://customer-service-efps.onrender.com/customers";
-=======
-const API_URL = "https://customer-service-efps.onrender.com"; // backend
->>>>>>> 97f922fa323e1ed4a06e2fc681f9e936017af656
+
+
 
 // GET all customers
 const getAll = async () => {
