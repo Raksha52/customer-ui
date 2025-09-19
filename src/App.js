@@ -1,16 +1,37 @@
-import React, { useState } from "react";
-import AddCustomer from "./components/AddCustomer";
-import CustomerList from "./components/CustomerList";
+
+import './App.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
+import AddCustomer from './components/AddCustomer';
+import CustomerList from './components/CustomerList';
 
 function App() {
-  const [refresh, setRefresh] = useState(false);
-
   return (
-    <div>
-      <h1>Customer Management</h1>
-      <AddCustomer onAdd={() => setRefresh(!refresh)} />
-      <CustomerList key={refresh} />
-    </div>
+    <Router>
+      <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div className="container-fluid">
+          <Link className="navbar-brand" to="/">Customer APP</Link>
+          <div className="collapse navbar-collapse">
+            <ul className="navbar-nav me-auto mb-2 ">
+              <li className="nav-item">
+                <Link className="nav-link" to="/">Add Customer</Link>
+              </li>
+              <li className="nav-item">
+                <Link className="nav-link" to="/list">View Customer</Link>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+
+      <div className="container mt-4">
+        <Routes>
+          <Route path="/" element={<AddCustomer />} />
+          <Route path="/list" element={<CustomerList />} />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 

@@ -1,27 +1,97 @@
-import React, { useState } from "react";
-import { addCustomer } from "../services/CustomerService";
+import React, { useState } from 'react';
+import { toast } from 'react-toastify';
+import CustomerService from '../services/CustomerService';
 
-function AddCustomer({ onAdd }) {
-  const [form, setForm] = useState({ name: "", email: "", phone: "" });
+function AddCustomer() {
+  const [form, setForm] = useState({
+    name: '',
+    email: '',
+    phone: ''
+  });
 
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    setForm({
+      ...form,
+      [e.target.name]: e.target.value
+    });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    const newCustomer = await addCustomer(form);
-    onAdd(newCustomer);
-    setForm({ name: "", email: "", phone: "" });
+
+    if (!form.name || !form.email || !form.phone) {
+      toast.error("Please fill all the fields");
+      return;
+    }
+
+    // ✅ Better email regex
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(form.email)) {
+      toast.error("Please enter a valid email");
+      return;
+    }
+
+    CustomerService.create(form)
+      .then(() => {
+        toast.success("Customer added successfully");
+        setForm({ name: '', email: '', phone: '' }); // reset form
+      })
+      .catch(() => {
+        toast.error("Error adding customer");
+      });
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input name="name" value={form.name} onChange={handleChange} placeholder="Name" required />
-      <input name="email" value={form.email} onChange={handleChange} placeholder="Email" required />
-      <input name="phone" value={form.phone} onChange={handleChange} placeholder="Phone" required />
-      <button type="submit">Add Customer</button>
-    </form>
+    <div className="card shadow p-4">
+      <h3 className="mb-4 text-primary">Add New Customer</h3>
+      <form onSubmit={handleSubmit} noValidate>
+        <div className="form-floating mb-3">
+          <input
+            type="text"
+            className="form-control"
+            id="name"
+            name="name"
+            placeholder="Full Name"
+            value={form.name}
+            onChange={handleChange}
+            required
+          />
+          <label htmlFor="name">Full Name</label>
+        </div>
+
+        <div className="form-floating mb-4">
+          <input
+            type="email"
+            className="form-control"
+            id="email"
+            name="email"
+            placeholder="Email"
+            value={form.email}
+            onChange={handleChange}
+            required
+          />
+          <label htmlFor="email">Email Address</label>
+        </div>
+
+        <div className="form-floating mb-4">
+          <input
+            type="text"
+            className="form-control"
+            id="phone"
+            name="phone"
+            placeholder="Phone"
+            value={form.phone}
+            onChange={handleChange}
+            required
+          />
+          <label htmlFor="phone">Phone Number</label>
+        </div>
+
+        <button type="submit" className="btn btn-primary float-end mt-3">
+          Add Customer
+        </button>
+      </form>
+    </div>
   );
 }
 

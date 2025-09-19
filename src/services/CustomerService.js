@@ -1,22 +1,48 @@
-const API_URL = "http://localhost:8082/customers"; // backend
+const API_URL = "https://customer-service-efps.onrender.com/customers";
 
-// Get all customers
-export const getAllCustomers = () => {
-  return fetch(API_URL).then(res => res.json());
+// GET all customers
+const getAll = async () => {
+  const res = await fetch(API_URL);
+  if (!res.ok) {
+    throw new Error("Failed to fetch customers");
+  }
+  return res.json();
 };
 
-// Add new customer
-export const addCustomer = (customer) => {
-  return fetch(API_URL, {
+// CREATE a customer
+const create = async (customer) => {
+  const res = await fetch(API_URL, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(customer)
-  }).then(res => res.json());
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(customer),
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to create customer");
+  }
+
+  // if backend sends JSON (like saved object), return it
+  try {
+    return await res.json();
+  } catch {
+    return {}; // fallback if no JSON body
+  }
 };
 
-// Delete customer
-export const deleteCustomer = (id) => {
-  return fetch(`${API_URL}/${id}`, {
-    method: "DELETE"
+// DELETE a customer by ID
+const remove = async (id) => {
+  const res = await fetch(`${API_URL}/${id}`, {
+    method: "DELETE",
   });
+
+  if (!res.ok) {
+    throw new Error("Failed to delete customer");
+  }
+
+  return true; // success flag
 };
+
+const CustomerService = { getAll, create, remove };
+export default CustomerService;
