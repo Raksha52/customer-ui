@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:8082/customers"; // backend
+const API_URL = "https://customer-service-efps.onrender.com"; // backend
 
 // Get all customers
 export const getAllCustomers = () => {
